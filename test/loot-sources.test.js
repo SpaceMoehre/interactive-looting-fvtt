@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { specialItems, parseCurrencyText, mergeDrafts } from "../scripts/core/loot-sources.js";
+import { specialItems, parseCurrencyText, currencyFromResult, mergeDrafts } from "../scripts/core/loot-sources.js";
 
 const MOD = "interactive-looting";
 
@@ -23,6 +23,23 @@ test("currency text results are recognised in plain and inline-roll form", () =>
   assert.deepEqual(parseCurrencyText("<p>47 gp</p>", denoms), { formula: "47", denomination: "gp" });
   assert.equal(parseCurrencyText("A rusty key", denoms), null);
   assert.equal(parseCurrencyText("12 apples", denoms), null);
+});
+
+test("Foundry inline-roll commands and HTML spaces are accepted in currency text", () => {
+  const denoms = ["gp", "sp"];
+  assert.deepEqual(parseCurrencyText("[[/r 2d6]] gp", denoms), { formula: "2d6", denomination: "gp" });
+  assert.deepEqual(parseCurrencyText("[[/roll 4d4*10]] sp", denoms), { formula: "4d4*10", denomination: "sp" });
+  assert.deepEqual(parseCurrencyText("<p>3d6&nbsp;gp</p>", denoms), { formula: "3d6", denomination: "gp" });
+});
+
+test("a result named e.g. 'Gold' with the amount in its description is still currency", () => {
+  const denoms = ["gp"];
+  assert.deepEqual(currencyFromResult({ name: "Gold", description: "<p>2d6 gp</p>" }, denoms), {
+    formula: "2d6",
+    denomination: "gp",
+  });
+  assert.deepEqual(currencyFromResult({ name: "10 gp", description: "" }, denoms), { formula: "10", denomination: "gp" });
+  assert.equal(currencyFromResult({ name: "Rusty key", description: "Opens the cellar" }, denoms), null);
 });
 
 test("duplicate drafts merge their quantities; quest and normal drafts stay separate", () => {

@@ -5,7 +5,7 @@
  *   container  – frozen LootContainer, or absent until first rolled
  *   access     – AccessState (locks, searched users, steal grants)
  */
-import { MODULE_ID, specialItems, parseCurrencyText, mergeDrafts } from "../core/loot-sources.js";
+import { MODULE_ID, specialItems, currencyFromResult, mergeDrafts } from "../core/loot-sources.js";
 import { resolveTable, matchTier } from "../core/table-resolution.js";
 import { isDead, interactionMode } from "../core/targeting.js";
 import { emptyAccess } from "../core/access.js";
@@ -177,11 +177,15 @@ async function drawTable(uuid, quest) {
       if (draft) drafts.push(draft);
       continue;
     }
-    const text = [r.name, r.description, r.text].find((t) => typeof t === "string" && t.trim()) ?? "";
-    const money = parseCurrencyText(text, settings.denominations());
+    const money = currencyFromResult(r, settings.denominations());
     if (!money) continue;
-    const roll = await new Roll(money.formula).evaluate();
-    if (roll.total > 0) drafts.push(currencyDraft(money.denomination, roll.total, quest));
+    let amount = 0;
+    try {
+      amount = Math.floor((await new Roll(money.formula).evaluate()).total);
+    } catch (err) {
+      console.warn(`${MODULE_ID} | bad currency formula "${money.formula}" in table ${uuid}`, err);
+    }
+    if (amount > 0) drafts.push(currencyDraft(money.denomination, amount, quest));
   }
   return drafts;
 }

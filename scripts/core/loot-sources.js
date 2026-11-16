@@ -20,12 +20,32 @@ export function specialItems(tokenItems, baseItemIds) {
  * @returns {{formula: string, denomination: string} | null}
  */
 export function parseCurrencyText(text, denominations) {
-  const plain = text.replace(/<[^>]*>/g, " ").trim();
-  const m = /^(?:\[\[\s*(.+?)\s*\]\]|([0-9d+\-*/() ]+?))\s+([a-z]+)\.?$/i.exec(plain);
+  const plain = text
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;| /gi, " ")
+    .trim();
+  const m = /^(?:\[\[\s*(?:\/r(?:oll)?\s+)?(.+?)\s*\]\]|([0-9d+\-*/() ]+?))\s*([a-z]+)\.?$/i.exec(plain);
   if (!m) return null;
   const denomination = m[3].toLowerCase();
   if (!denominations.includes(denomination)) return null;
-  return { formula: (m[1] ?? m[2]).trim(), denomination };
+  const formula = (m[1] ?? m[2]).trim();
+  if (!formula) return null;
+  return { formula, denomination };
+}
+
+/**
+ * Currency described by a table text result. Checks the name, then the
+ * description, so "Gold" + "2d6 gp" works as well as a name of "2d6 gp".
+ * @param {{name?: string|null, description?: string|null}} result
+ * @param {string[]} denominations
+ */
+export function currencyFromResult(result, denominations) {
+  for (const text of [result.name, result.description]) {
+    if (typeof text !== "string" || !text.trim()) continue;
+    const money = parseCurrencyText(text, denominations);
+    if (money) return money;
+  }
+  return null;
 }
 
 /**
