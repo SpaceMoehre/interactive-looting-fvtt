@@ -32,3 +32,22 @@
 .interactive-looting.tier-config .il-tier-table a { cursor: pointer; }
 .interactive-looting.tier-config .form-footer { display: flex; gap: 0.25rem; margin-top: 0.5rem; }
 .interactive-looting.tier-config .form-footer button { flex: 1; }
+
+/* Help window */
+.interactive-looting.il-help .window-content { padding: 0; overflow: hidden; }
+.il-help .il-help-layout { display: flex; height: 100%; min-height: 0; }
+.il-help .il-help-nav {
+  flex: none; width: 170px; display: flex; flex-direction: column; gap: 0.2rem;
+  padding: 0.5rem; border-right: 1px solid rgba(127, 127, 127, 0.35); overflow-y: auto;
+}
+.il-help .il-help-nav button { text-align: left; justify-content: flex-start; }
+.il-help .il-help-nav button.active { background: var(--color-warm-2, rgba(127, 127, 127, 0.3)); font-weight: bold; }
+.il-help .il-help-version { margin-top: auto; font-size: 0.8em; opacity: 0.7; }
+.il-help .il-help-content { flex: 1; min-width: 0; overflow-y: auto; padding: 0.5rem 1rem 1rem; line-height: 1.45; }
+.il-help .il-help-content section:not(.active) { display: none; }
+.il-help .il-help-content h2 { margin-top: 0.25rem; }
+.il-help .il-help-content h3 { margin: 1rem 0 0.25rem; border-bottom: none; }
+.il-help .il-help-content dt { font-weight: bold; margin-top: 0.6rem; }
+.il-help .il-help-content dd { margin: 0.15rem 0 0 1rem; }
+.il-help .il-help-value { font-weight: normal; margin-left: 0.4rem; padding: 0 0.35rem; border-radius: 3px; background: rgba(127, 127, 127, 0.2); }
+.il-help kbd { padding: 0 0.3rem; border: 1px solid rgba(127, 127, 127, 0.6); border-radius: 3px; font-family: monospace; }

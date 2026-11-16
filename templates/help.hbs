@@ -1,0 +1,180 @@
+<div class="il-help-layout">
+  <nav class="il-help-nav">
+    {{#each sections}}
+    <button type="button" data-action="section" data-section="{{id}}">{{label}}</button>
+    {{/each}}
+    <p class="il-help-version">v{{version}} · {{system}}</p>
+  </nav>
+
+  <div class="il-help-content">
+
+    <section data-section="overview">
+      <h2>Interactive Looting</h2>
+      <p>Players loot defeated tokens and pick the pockets of living NPCs with a skill check. A small loot window shows what they can take.</p>
+      <ul>
+        <li><strong>Dead</strong> tokens are <strong>looted</strong>. You can require a search check (Investigation in D&amp;D 5e).</li>
+        <li><strong>Living</strong> tokens are <strong>stolen from</strong> with a Sleight of Hand check against the target's passive Perception, or against a fixed DC.</li>
+        <li>Loot comes from <strong>roll tables</strong>, from <strong>quest items</strong> you attach to a token, and from items in the token's <strong>inventory</strong>.</li>
+        <li>A <strong>GM must be online</strong>. The GM's client checks every request and makes all changes.</li>
+      </ul>
+      <h3>Quick start for the GM</h3>
+      <ol>
+        <li>Create a roll table with items and coins (see <em>Loot tables</em>).</li>
+        <li>Open <strong>Game Settings → Configure Settings → Interactive Looting → Configure tiers</strong> and set it as the <strong>default table</strong>.</li>
+        <li>Kill a monster (dead status or 0 HP), have a player target it and press <kbd>{{key}}</kbd>.</li>
+      </ol>
+    </section>
+
+    <section data-section="players">
+      <h2>For players</h2>
+      <h3>Starting</h3>
+      <ul>
+        <li><strong>Target</strong> the NPC token and press <kbd>{{key}}</kbd>, or <strong>double-click</strong> it (if the GM allows it).</li>
+        <li>You need your own token on the same scene, close enough to the target (see <em>Interaction range</em> in the settings).</li>
+        <li>Player characters can never be looted or stolen from.</li>
+      </ul>
+      <h3>Looting a dead token</h3>
+      <ul>
+        <li>If the GM requires a search check, you roll it first. Once you pass, you can reopen that token's loot without rolling again.</li>
+        <li>If you fail, you may or may not try again, depending on the GM's setting.</li>
+        <li>When the last item is taken, the token is removed from the scene (unless the GM keeps empty tokens).</li>
+      </ul>
+      <h3>Stealing from a living token</h3>
+      <ul>
+        <li><strong>Every attempt needs a new roll.</strong> A success lets you take a limited number of items (shown in the window).</li>
+        <li>A new attempt replaces what the last one allowed; a failure cancels any takes you had left.</li>
+        <li>A failure can go unnoticed, be noticed in chat, or turn the target hostile, depending on the GM's settings. If you are noticed you may not get another try.</li>
+      </ul>
+      <h3>The loot window</h3>
+      <ul>
+        <li>Tick the items you want and click <strong>Take</strong>. <strong>Take all</strong> is available when looting.</li>
+        <li><strong>Trash</strong> throws away everything left (after a confirmation), if the GM allows it. Quest items usually survive trashing.</li>
+        <li>Open windows stay in sync between players. If two players click the same item, the first click wins.</li>
+        <li>Coins go straight into your character's currency; items appear in the inventory.</li>
+      </ul>
+    </section>
+
+    <section data-section="setup">
+      <h2>GM setup</h2>
+      <h3>Which table a token uses</h3>
+      <p>The first match wins:</p>
+      <ol>
+        <li>the table set on the <strong>placed token</strong> (Token config → Loot tab);</li>
+        <li>the table set on the actor's <strong>prototype token</strong> (all tokens of that actor);</li>
+        <li>the first matching <strong>tier</strong>;</li>
+        <li>the <strong>default table</strong>.</li>
+      </ol>
+      <h3>Tiers</h3>
+      <p>Open <strong>Configure tiers</strong> in this module's settings. Each tier has:</p>
+      <ul>
+        <li><strong>Min / Max</strong>: the creature's power range, inclusive{{#if isDnd5e}} (Challenge Rating in D&amp;D 5e){{/if}}. Leave a bound empty for no limit.</li>
+        <li><strong>Creature type</strong> (optional): only creatures of this type, e.g. <code>undead</code>. A typed tier wins over an untyped one.</li>
+        <li><strong>Table</strong> and an optional <strong>Loot DC</strong> for the search check.</li>
+      </ul>
+      <p>Example: CR 0–4 → "Common loot", 5–10 → "Uncommon loot", 11 and up → "Rare loot", plus 0–30 <code>undead</code> → "Grave goods".</p>
+      <h3>When loot is rolled</h3>
+      <ul>
+        <li>The tables are rolled on the <strong>first successful</strong> loot or steal of a token, and the result is kept, so every player sees the same loot.</li>
+        <li>Items you add to the token's inventory or quest items later are added to the loot; ones you remove are taken out.</li>
+        <li>Use <strong>Roll / re-roll</strong> in the token's Loot tab to roll again, or to roll in advance and preview.</li>
+      </ul>
+      <h3>Empty tokens</h3>
+      <p>With <strong>Empty dead tokens → Remove</strong>, a dead token is removed when its last item is taken, or right away when someone loots it and there is nothing. With <strong>Keep</strong>, it stays and the window shows it empty.</p>
+    </section>
+
+    <section data-section="tables">
+      <h2>Loot tables</h2>
+      <p>A loot table is an ordinary Foundry <strong>Roll Table</strong>.</p>
+      <ol>
+        <li>Open the <strong>Roll Tables</strong> sidebar tab and create a table.</li>
+        <li>Set a <strong>formula</strong> such as <code>1d100</code>, or leave it empty to use the sum of the weights.</li>
+        <li>Add results:
+          <ul>
+            <li><strong>Items</strong>: drag an item from the Items sidebar or a compendium onto the table. The item's own quantity is used.</li>
+            <li><strong>Coins</strong>: a text result whose name or description is an amount and a denomination, e.g. <code>2d6 gp</code>, <code>15 sp</code> or <code>[[3d10*5]] cp</code>.</li>
+            <li><strong>Nothing</strong>: any other text result (e.g. <code>Nothing</code>) drops nothing.</li>
+          </ul>
+        </li>
+      </ol>
+      <h3>More than one drop per roll</h3>
+      <p>The table is rolled <strong>once</strong>. To drop several things:</p>
+      <ul>
+        <li><strong>Overlapping ranges</strong>: every result whose range covers the roll drops. Gold on 1–100 and a dagger on 1–30 means gold always, a dagger 30% of the time.</li>
+        <li><strong>Nested tables</strong>: drag another roll table in as a result; it is rolled too. A "Bandit" table can point to "Coins" and "Trinkets" tables.</li>
+      </ul>
+      <h3>Quest loot</h3>
+      <p>Put guaranteed rewards in a token's <strong>secondary table</strong> or <strong>secondary items</strong> (Loot tab). They are added on top of the normal table.</p>
+    </section>
+
+    <section data-section="token">
+      <h2>Token Loot tab</h2>
+      <p>Every <strong>Token config</strong> and <strong>Prototype Token config</strong> has a <strong>Loot</strong> tab. Settings on the prototype apply to every token of that actor; settings on a placed token override them. Empty fields inherit.</p>
+      <ul>
+        <li><strong>Loot table</strong>: overrides tiers and the default table. The tab shows which table is in use.</li>
+        <li><strong>Secondary table / items</strong>: guaranteed quest loot. Drag items into the box.</li>
+        <li><strong>Loot check</strong>: require the search check for this token, never require it, or use the default.</li>
+        <li><strong>Loot DC / Steal DC</strong>: fixed DCs. An empty steal DC uses the target's passive Perception.</li>
+        <li><strong>Failed steal</strong>: this token's consequence (silent, noticed, hostile).</li>
+        <li><strong>Stored loot</strong>: what is currently lootable. <strong>Roll / re-roll</strong> rolls the tables again, <strong>Clear</strong> removes the stored loot (it rolls again next time), <strong>Reset attempts</strong> clears locks and passed searches.</li>
+      </ul>
+      <h3>Inventory items</h3>
+      <ul>
+        <li>On a placed, <strong>unlinked</strong> token, items its actor doesn't normally carry are lootable as quest loot. Give a bandit token a stolen letter and it can be found.</li>
+        <li>Any item with the flag <code>flags.interactive-looting.loot = true</code> is lootable, on linked actors too.</li>
+        <li>Taking such an item moves it out of the token's inventory.</li>
+      </ul>
+    </section>
+
+    <section data-section="settings">
+      <h2>Settings</h2>
+      <p>The current values in this world. Change them in <strong>Configure Settings → Interactive Looting</strong>.</p>
+      <dl class="il-help-settings">
+        {{#each settings}}
+        <dt>{{name}} <span class="il-help-value">{{value}}</span></dt>
+        <dd>{{hint}}</dd>
+        {{/each}}
+      </dl>
+    </section>
+
+    <section data-section="systems">
+      <h2>Other game systems</h2>
+      <p>{{#if isDnd5e}}D&amp;D 5e is set up automatically.{{else}}This world runs <strong>{{system}}</strong>. D&amp;D 5e is set up automatically; for other systems fill in the data paths in the settings.{{/if}}</p>
+      <ul>
+        <li><strong>Loot skill / Steal skill</strong>: the system's skill keys (D&amp;D 5e: <code>inv</code>, <code>slt</code>). If the system has no skill roll function, <code>1d20 +</code> the value at <strong>Data path: skill modifier</strong> is rolled.</li>
+        <li><strong>Data path: passive Perception</strong>: the target's steal DC.</li>
+        <li><strong>Data path: hit points</strong>: for the "0 HP counts as dead" rule.</li>
+        <li><strong>Data path: creature power / type</strong>: used to pick a tier.</li>
+        <li><strong>Data path: currency</strong> and <strong>denominations</strong>: where coins go and which words in table results count as coins.</li>
+        <li><strong>Data path: item quantity</strong>: the item's stack size.</li>
+      </ul>
+      <p>Data paths are read from the actor or item data, e.g. <code>system.attributes.hp.value</code>.</p>
+    </section>
+
+    <section data-section="troubleshooting">
+      <h2>Troubleshooting</h2>
+      <dl>
+        <dt>"The GM is running version …, you are running …"</dt>
+        <dd>The GM's browser runs an older copy of the module. Update the module in Setup, then reload every browser with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>. Check for a second GM session (another tab or device): only one GM client answers requests.</dd>
+        <dt>"A GM must be online."</dt>
+        <dd>No GM is connected, or the GM's client did not answer within 15 seconds.</dd>
+        <dt>Nothing happens</dt>
+        <dd>
+          <ul>
+            <li>The key needs a <strong>targeted</strong> token (not just selected).</li>
+            <li>Double-click only works on tokens you don't own. GMs own everything, so they use the key or the sack button in the Token HUD.</li>
+            <li>Tokens without an actor (scenery) and player characters are ignored. The browser console (<kbd>F12</kbd>) shows why: <code>interactive-looting | nothing to do on this token</code>.</li>
+          </ul>
+        </dd>
+        <dt>"Your character has no skill …"</dt>
+        <dd>The skill key in the settings doesn't exist in this system. Check <strong>Loot skill</strong> and <strong>Steal skill</strong>.</dd>
+        <dt>"You need a token on this scene." / "You are too far away."</dt>
+        <dd>Select your own token, or move closer. The range is set by <strong>Interaction range</strong>; 0 turns it off.</dd>
+        <dt>Coins are missing</dt>
+        <dd>The result text must be just an amount and a denomination listed in <strong>Currency denominations</strong>, e.g. <code>2d6 gp</code>.</dd>
+        <dt>Something went wrong</dt>
+        <dd>Open the GM's browser console (<kbd>F12</kbd>); errors start with <code>interactive-looting |</code>. Please report them at the module's GitHub issues page.</dd>
+      </dl>
+    </section>
+
+  </div>
+</div>

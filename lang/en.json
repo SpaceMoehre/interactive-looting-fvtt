@@ -7,20 +7,52 @@
       "Hint": "Loot the targeted dead token, or attempt to steal from the targeted living token."
     },
     "Settings": {
+      "helpMenu": {
+        "Name": "Help",
+        "Label": "Open help",
+        "Hint": "How looting and stealing work, how to set up loot tables, and what to do when something goes wrong."
+      },
       "tierMenu": {
         "Name": "Loot tables & tiers",
         "Label": "Configure tiers",
         "Hint": "Set the default loot table and stronger tables for more powerful creatures."
       },
-      "maxDistance": { "Name": "Interaction range", "Hint": "Maximum distance (in scene units) between your token and the target. 0 disables the range check." },
-      "doubleClick": { "Name": "Double-click to loot", "Hint": "Let players double-click NPC tokens they do not own to loot or steal. Uses a best-effort patch; the keybinding always works." },
-      "useDeadStatus": { "Name": "Dead status counts as dead", "Hint": "Tokens with the defeated/dead status can be looted." },
-      "useZeroHp": { "Name": "0 HP counts as dead", "Hint": "Tokens at 0 HP or less can be looted." },
-      "lootCheckEnabled": { "Name": "Require a check to loot", "Hint": "Players must pass a skill check (Investigation in D&D 5e) to loot. Can be overridden per token." },
-      "lootCheckDc": { "Name": "Default loot DC", "Hint": "Used when neither the token nor its tier sets a DC." },
-      "lootRetry": { "Name": "Allow retrying failed loot checks", "Hint": "When off, a player who fails the loot check cannot try that token again." },
-      "stealDefaultDc": { "Name": "Fallback steal DC", "Hint": "Used when the target has no passive Perception and no fixed DC." },
-      "stealLimit": { "Name": "Items per successful steal", "Hint": "How many loot rows a thief may take after one successful check." },
+      "maxDistance": {
+        "Name": "Interaction range",
+        "Hint": "Maximum distance (in scene units) between your token and the target. 0 disables the range check."
+      },
+      "doubleClick": {
+        "Name": "Double-click to loot",
+        "Hint": "Let players double-click NPC tokens they do not own to loot or steal. Uses a best-effort patch; the keybinding always works."
+      },
+      "useDeadStatus": {
+        "Name": "Dead status counts as dead",
+        "Hint": "Tokens with the defeated/dead status can be looted."
+      },
+      "useZeroHp": {
+        "Name": "0 HP counts as dead",
+        "Hint": "Tokens at 0 HP or less can be looted."
+      },
+      "lootCheckEnabled": {
+        "Name": "Require a check to loot",
+        "Hint": "Players must pass a skill check (Investigation in D&D 5e) to loot. Can be overridden per token."
+      },
+      "lootCheckDc": {
+        "Name": "Default loot DC",
+        "Hint": "Used when neither the token nor its tier sets a DC."
+      },
+      "lootRetry": {
+        "Name": "Allow retrying failed loot checks",
+        "Hint": "When off, a player who fails the loot check cannot try that token again."
+      },
+      "stealDefaultDc": {
+        "Name": "Fallback steal DC",
+        "Hint": "Used when the target has no passive Perception and no fixed DC."
+      },
+      "stealLimit": {
+        "Name": "Items per successful steal",
+        "Hint": "How many loot rows a thief may take after one successful check."
+      },
       "consequence": {
         "Name": "Failed steal consequence",
         "Hint": "What happens when a steal attempt fails. Can be overridden per token.",
@@ -28,9 +60,18 @@
         "noticed": "Noticed (public chat message)",
         "hostile": "Hostile (target turns hostile)"
       },
-      "retryLock": { "Name": "Lock after a noticed steal", "Hint": "A player who is noticed cannot try to steal from that token again." },
-      "marginEscalation": { "Name": "Failing by 5+ is always noticed", "Hint": "A silent failure becomes noticed when the check misses by 5 or more." },
-      "combatPrompt": { "Name": "Combat prompt", "Hint": "With the hostile consequence, whisper the GM a suggestion to start combat." },
+      "retryLock": {
+        "Name": "Lock after a noticed steal",
+        "Hint": "A player who is noticed cannot try to steal from that token again."
+      },
+      "marginEscalation": {
+        "Name": "Failing by 5+ is always noticed",
+        "Hint": "A silent failure becomes noticed when the check misses by 5 or more."
+      },
+      "combatPrompt": {
+        "Name": "Combat prompt",
+        "Hint": "With the hostile consequence, whisper the GM a suggestion to start combat."
+      },
       "trashPermission": {
         "Name": "Who may trash loot",
         "Hint": "Trash removes all remaining loot from a token.",
@@ -38,23 +79,56 @@
         "gm": "GM only",
         "off": "Nobody (button hidden)"
       },
-      "trashQuest": { "Name": "Trash removes quest items", "Hint": "When off, quest items (secondary table and items, special inventory) survive trashing." },
+      "trashQuest": {
+        "Name": "Trash removes quest items",
+        "Hint": "When off, quest items (secondary table and items, special inventory) survive trashing."
+      },
       "removeEmpty": {
         "Name": "Empty dead tokens",
         "Hint": "What to do with a dead token once all its loot is gone, or when someone tries to loot a dead token that has nothing: remove it right away, or keep it and show an empty loot window.",
         "delete": "Remove from the scene",
         "keep": "Keep on the scene"
       },
-      "powerPath": { "Name": "Data path: creature power", "Hint": "Actor data path used to pick a tier (D&D 5e: system.details.cr)." },
-      "typePath": { "Name": "Data path: creature type", "Hint": "Actor data path for the creature type used by typed tiers." },
-      "hpPath": { "Name": "Data path: hit points", "Hint": "Actor data path for current HP (used by the 0 HP rule)." },
-      "passivePath": { "Name": "Data path: passive Perception", "Hint": "Actor data path for the target's passive Perception (steal DC)." },
-      "lootSkill": { "Name": "Loot skill", "Hint": "Skill key rolled to loot (D&D 5e: inv)." },
-      "stealSkill": { "Name": "Steal skill", "Hint": "Skill key rolled to steal (D&D 5e: slt)." },
-      "skillModPath": { "Name": "Data path: skill modifier", "Hint": "Fallback when the system has no skill roll API. {skill} is replaced by the skill key; 1d20 + this value is rolled." },
-      "currencyPath": { "Name": "Data path: currency", "Hint": "Actor data path of the currency object (D&D 5e: system.currency)." },
-      "denominations": { "Name": "Currency denominations", "Hint": "Comma-separated denominations recognised in table results such as \"2d6 gp\"." },
-      "quantityPath": { "Name": "Data path: item quantity", "Hint": "Item data path for stack quantity." }
+      "powerPath": {
+        "Name": "Data path: creature power",
+        "Hint": "Actor data path used to pick a tier (D&D 5e: system.details.cr)."
+      },
+      "typePath": {
+        "Name": "Data path: creature type",
+        "Hint": "Actor data path for the creature type used by typed tiers."
+      },
+      "hpPath": {
+        "Name": "Data path: hit points",
+        "Hint": "Actor data path for current HP (used by the 0 HP rule)."
+      },
+      "passivePath": {
+        "Name": "Data path: passive Perception",
+        "Hint": "Actor data path for the target's passive Perception (steal DC)."
+      },
+      "lootSkill": {
+        "Name": "Loot skill",
+        "Hint": "Skill key rolled to loot (D&D 5e: inv)."
+      },
+      "stealSkill": {
+        "Name": "Steal skill",
+        "Hint": "Skill key rolled to steal (D&D 5e: slt)."
+      },
+      "skillModPath": {
+        "Name": "Data path: skill modifier",
+        "Hint": "Fallback when the system has no skill roll API. {skill} is replaced by the skill key; 1d20 + this value is rolled."
+      },
+      "currencyPath": {
+        "Name": "Data path: currency",
+        "Hint": "Actor data path of the currency object (D&D 5e: system.currency)."
+      },
+      "denominations": {
+        "Name": "Currency denominations",
+        "Hint": "Comma-separated denominations recognised in table results such as \"2d6 gp\"."
+      },
+      "quantityPath": {
+        "Name": "Data path: item quantity",
+        "Hint": "Item data path for stack quantity."
+      }
     },
     "Tiers": {
       "Title": "Loot tables & tiers",
@@ -148,6 +222,22 @@
       "trashNotAllowed": "You are not allowed to trash loot.",
       "internal": "Something went wrong. See the GM's console.",
       "unknownAction": "Unknown request."
+    },
+    "Help": {
+      "Title": "Interactive Looting: Help",
+      "On": "On",
+      "Off": "Off",
+      "Unbound": "(no key bound)",
+      "Sections": {
+        "overview": "Overview",
+        "players": "For players",
+        "setup": "GM setup",
+        "tables": "Loot tables",
+        "token": "Token Loot tab",
+        "settings": "Settings",
+        "systems": "Other systems",
+        "troubleshooting": "Troubleshooting"
+      }
     }
   }
 }

@@ -12,7 +12,7 @@ import { LootWindow } from "./foundry/loot-window.js";
 import { injectTab } from "./foundry/token-config.js";
 import * as state from "./foundry/state.js";
 
-const TEMPLATES = ["loot-window", "token-config", "tier-config"].map((n) => `modules/${MODULE_ID}/templates/${n}.hbs`);
+const TEMPLATES = ["loot-window", "token-config", "tier-config", "help"].map((n) => `modules/${MODULE_ID}/templates/${n}.hbs`);
 
 Hooks.once("init", () => {
   registerSettings();

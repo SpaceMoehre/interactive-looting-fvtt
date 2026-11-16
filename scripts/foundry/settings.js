@@ -1,5 +1,6 @@
 import { MODULE_ID } from "../core/loot-sources.js";
 import { TierConfig } from "./tier-config.js";
+import { HelpWindow } from "./help.js";
 
 /** System presets for data paths and skill keys. Anything missing falls back to GENERIC. */
 const PRESETS = {
@@ -62,6 +63,14 @@ export function registerSettings() {
       ...extra,
     });
 
+  game.settings.registerMenu(MODULE_ID, "helpMenu", {
+    name: L("helpMenu.Name"),
+    label: L("helpMenu.Label"),
+    hint: L("helpMenu.Hint"),
+    icon: "fa-solid fa-book-open",
+    type: HelpWindow,
+    restricted: false,
+  });
   game.settings.registerMenu(MODULE_ID, "tierMenu", {
     name: L("tierMenu.Name"),
     label: L("tierMenu.Label"),
