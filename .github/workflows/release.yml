@@ -1,0 +1,72 @@
+name: Release
+
+# Push a tag like v0.2.0 to publish a release.
+# The release carries:
+#   module.json  - the Foundry manifest (version taken from the tag)
+#   module.zip   - the installable module
+# Both manifest and download URLs point at /releases/latest/, so the manifest
+# URL that users install from never changes.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute version and URLs
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          REPO_URL="https://github.com/${GITHUB_REPOSITORY}"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "REPO_URL=$REPO_URL" >> "$GITHUB_ENV"
+          echo "LATEST=$REPO_URL/releases/latest/download" >> "$GITHUB_ENV"
+
+      - name: Build manifest
+        run: |
+          mkdir -p dist
+          jq --arg version "$VERSION" \
+             --arg url "$REPO_URL" \
+             --arg manifest "$LATEST/module.json" \
+             --arg download "$LATEST/module.zip" \
+             '.version = $version | .url = $url | .manifest = $manifest | .download = $download' \
+             module.json > dist/module.json
+          cat dist/module.json
+
+      - name: Build module.zip
+        run: |
+          mkdir -p dist/pkg
+          cp -r scripts styles templates lang README.md dist/pkg/
+          [ -f LICENSE ] && cp LICENSE dist/pkg/ || true
+          cp dist/module.json dist/pkg/module.json
+          (cd dist/pkg && zip -r ../module.zip .)
+          unzip -l dist/module.zip
+
+      - name: Publish GitHub release
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            dist/module.json dist/module.zip \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes \
+            --latest

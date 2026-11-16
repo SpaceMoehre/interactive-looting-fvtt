@@ -25,6 +25,22 @@ Players loot defeated tokens and pick the pockets of living NPCs with a skill ch
 - **Inventory items:** items on a placed (unlinked) token that its actor doesn't normally carry are lootable as quest loot. Any item with `flags.interactive-looting.loot = true` is lootable too.
 - **Currency** comes from table text results such as `2d6 gp` or `[[3d10*5]] sp`.
 
+## Installation
+
+In Foundry, go to **Add-on Modules → Install Module** and paste this manifest URL:
+
+```
+https://github.com/SpaceMoehre/interactive-looting-fvtt/releases/latest/download/module.json
+```
+
+## Releasing
+
+Push a version tag. CI runs the tests, stamps the version into `module.json` and publishes a GitHub release with `module.json` and `module.zip`:
+
+```bash
+git tag v0.2.0 && git push origin v0.2.0
+```
+
 ## Development
 
 ```bash
