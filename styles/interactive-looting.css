@@ -1,0 +1,34 @@
+/* Interactive Looting */
+
+.interactive-looting.loot-window .window-content { padding: 0.5rem; }
+.interactive-looting .il-hint { margin: 0 0 0.5rem; font-style: italic; opacity: 0.8; }
+
+.interactive-looting .il-list { list-style: none; margin: 0; padding: 0; max-height: 360px; overflow-y: auto; }
+.interactive-looting .il-row label {
+  display: flex; align-items: center; gap: 0.5rem; padding: 0.25rem; border-radius: 4px; cursor: pointer;
+}
+.interactive-looting .il-row label:hover { background: rgba(127, 127, 127, 0.15); }
+.interactive-looting .il-icon { width: 32px; height: 32px; flex: none; border: none; object-fit: contain; }
+.interactive-looting .il-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.interactive-looting .il-amount { flex: none; opacity: 0.8; font-variant-numeric: tabular-nums; }
+.interactive-looting .il-row input[type="checkbox"] { flex: none; margin: 0; }
+
+.interactive-looting .il-buttons { display: flex; gap: 0.25rem; margin-top: 0.5rem; }
+.interactive-looting .il-buttons button { flex: 1; white-space: nowrap; }
+.interactive-looting .il-trash { color: var(--color-level-error, #c00); }
+
+/* Token config tab */
+.il-config .il-drop { list-style: none; margin: 0; padding: 0.25rem; min-height: 2.5rem; border: 1px dashed rgba(127, 127, 127, 0.6); border-radius: 4px; }
+.il-config .il-drop li, .il-config .il-preview li { display: flex; align-items: center; gap: 0.4rem; padding: 0.1rem 0; }
+.il-config .il-drop img, .il-config .il-preview img { width: 24px; height: 24px; border: none; }
+.il-config .il-drop a { margin-left: auto; cursor: pointer; }
+.il-config .il-preview { list-style: none; margin: 0 0 0.5rem; padding: 0; }
+.il-config .il-config-buttons { display: flex; gap: 0.25rem; }
+
+/* Tier menu */
+.interactive-looting.tier-config .il-tier-table { width: 100%; border-collapse: collapse; }
+.interactive-looting.tier-config .il-tier-table td { padding: 0.15rem; }
+.interactive-looting.tier-config .il-tier-table input[type="number"] { width: 4.5rem; }
+.interactive-looting.tier-config .il-tier-table a { cursor: pointer; }
+.interactive-looting.tier-config .form-footer { display: flex; gap: 0.25rem; margin-top: 0.5rem; }
+.interactive-looting.tier-config .form-footer button { flex: 1; }

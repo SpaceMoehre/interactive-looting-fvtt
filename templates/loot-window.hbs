@@ -1,0 +1,32 @@
+<section class="il-body">
+  {{#unless isLoot}}
+  <p class="il-hint">{{localize "INTERACTIVE_LOOTING.Window.StealHint" count=remaining}}</p>
+  {{/unless}}
+  <ul class="il-list">
+    {{#each entries}}
+    <li class="il-row" {{#if tooltip}}data-tooltip="{{tooltip}}"{{/if}}>
+      <label>
+        <img class="il-icon" src="{{img}}" alt="">
+        <span class="il-name">{{name}}</span>
+        {{#if showAmount}}<span class="il-amount">{{amount}}</span>{{/if}}
+        <input type="checkbox" data-entry="{{id}}" {{checked checked}}>
+      </label>
+    </li>
+    {{/each}}
+  </ul>
+  <footer class="il-buttons">
+    <button type="button" data-action="take" {{disabled busy}}>
+      <i class="fa-solid fa-hand"></i> {{localize "INTERACTIVE_LOOTING.Window.Take"}}
+    </button>
+    {{#if isLoot}}
+    <button type="button" data-action="takeAll" {{disabled busy}}>
+      <i class="fa-solid fa-hands"></i> {{localize "INTERACTIVE_LOOTING.Window.TakeAll"}}
+    </button>
+    {{/if}}
+    {{#if canTrash}}
+    <button type="button" class="il-trash" data-action="trash" {{disabled busy}}>
+      <i class="fa-solid fa-trash"></i> {{localize "INTERACTIVE_LOOTING.Window.Trash"}}
+    </button>
+    {{/if}}
+  </footer>
+</section>

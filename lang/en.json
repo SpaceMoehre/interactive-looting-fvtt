@@ -1,0 +1,150 @@
+{
+  "INTERACTIVE_LOOTING": {
+    "Hud": "Loot / Steal",
+    "Unidentified": "Unidentified Item",
+    "Keybinding": {
+      "Name": "Loot or steal from target",
+      "Hint": "Loot the targeted dead token, or attempt to steal from the targeted living token."
+    },
+    "Settings": {
+      "tierMenu": {
+        "Name": "Loot tables & tiers",
+        "Label": "Configure tiers",
+        "Hint": "Set the default loot table and stronger tables for more powerful creatures."
+      },
+      "maxDistance": { "Name": "Interaction range", "Hint": "Maximum distance (in scene units) between your token and the target. 0 disables the range check." },
+      "doubleClick": { "Name": "Double-click to loot", "Hint": "Let players double-click NPC tokens they do not own to loot or steal. Uses a best-effort patch; the keybinding always works." },
+      "useDeadStatus": { "Name": "Dead status counts as dead", "Hint": "Tokens with the defeated/dead status can be looted." },
+      "useZeroHp": { "Name": "0 HP counts as dead", "Hint": "Tokens at 0 HP or less can be looted." },
+      "lootCheckEnabled": { "Name": "Require a check to loot", "Hint": "Players must pass a skill check (Investigation in D&D 5e) to loot. Can be overridden per token." },
+      "lootCheckDc": { "Name": "Default loot DC", "Hint": "Used when neither the token nor its tier sets a DC." },
+      "lootRetry": { "Name": "Allow retrying failed loot checks", "Hint": "When off, a player who fails the loot check cannot try that token again." },
+      "stealDefaultDc": { "Name": "Fallback steal DC", "Hint": "Used when the target has no passive Perception and no fixed DC." },
+      "stealLimit": { "Name": "Items per successful steal", "Hint": "How many loot rows a thief may take after one successful check." },
+      "consequence": {
+        "Name": "Failed steal consequence",
+        "Hint": "What happens when a steal attempt fails. Can be overridden per token.",
+        "silent": "Silent (nothing happens)",
+        "noticed": "Noticed (public chat message)",
+        "hostile": "Hostile (target turns hostile)"
+      },
+      "retryLock": { "Name": "Lock after a noticed steal", "Hint": "A player who is noticed cannot try to steal from that token again." },
+      "marginEscalation": { "Name": "Failing by 5+ is always noticed", "Hint": "A silent failure becomes noticed when the check misses by 5 or more." },
+      "combatPrompt": { "Name": "Combat prompt", "Hint": "With the hostile consequence, whisper the GM a suggestion to start combat." },
+      "trashPermission": {
+        "Name": "Who may trash loot",
+        "Hint": "Trash removes all remaining loot from a token.",
+        "everyone": "Everyone with the loot window open",
+        "gm": "GM only",
+        "off": "Nobody (button hidden)"
+      },
+      "trashQuest": { "Name": "Trash removes quest items", "Hint": "When off, quest items (secondary table and items, special inventory) survive trashing." },
+      "removeEmpty": {
+        "Name": "Empty dead tokens",
+        "Hint": "What to do with a dead token once all its loot is gone.",
+        "delete": "Remove from the scene",
+        "keep": "Keep on the scene"
+      },
+      "powerPath": { "Name": "Data path: creature power", "Hint": "Actor data path used to pick a tier (D&D 5e: system.details.cr)." },
+      "typePath": { "Name": "Data path: creature type", "Hint": "Actor data path for the creature type used by typed tiers." },
+      "hpPath": { "Name": "Data path: hit points", "Hint": "Actor data path for current HP (used by the 0 HP rule)." },
+      "passivePath": { "Name": "Data path: passive Perception", "Hint": "Actor data path for the target's passive Perception (steal DC)." },
+      "lootSkill": { "Name": "Loot skill", "Hint": "Skill key rolled to loot (D&D 5e: inv)." },
+      "stealSkill": { "Name": "Steal skill", "Hint": "Skill key rolled to steal (D&D 5e: slh)." },
+      "skillModPath": { "Name": "Data path: skill modifier", "Hint": "Fallback when the system has no skill roll API. {skill} is replaced by the skill key; 1d20 + this value is rolled." },
+      "currencyPath": { "Name": "Data path: currency", "Hint": "Actor data path of the currency object (D&D 5e: system.currency)." },
+      "denominations": { "Name": "Currency denominations", "Hint": "Comma-separated denominations recognised in table results such as \"2d6 gp\"." },
+      "quantityPath": { "Name": "Data path: item quantity", "Hint": "Item data path for stack quantity." }
+    },
+    "Tiers": {
+      "Title": "Loot tables & tiers",
+      "Hint": "The first matching rule wins: token table → actor table → tier → default table. Min and max are inclusive; leave empty for no bound. A tier with a creature type is preferred over an untyped one.",
+      "DefaultTable": "Default table",
+      "Min": "Min",
+      "Max": "Max",
+      "Type": "Creature type",
+      "AnyType": "any",
+      "Table": "Table",
+      "Dc": "Loot DC",
+      "Add": "Add tier",
+      "Remove": "Remove tier",
+      "Save": "Save",
+      "Empty": "No tiers yet."
+    },
+    "Config": {
+      "TabLabel": "Loot",
+      "TokenHint": "Settings for this placed token. Empty fields inherit from the actor's prototype token, then the global settings.",
+      "PrototypeHint": "Defaults for every token of this actor. Empty fields inherit from the global settings.",
+      "Tables": "Loot tables",
+      "Table": "Loot table",
+      "Inherit": "Inherit (tier / default)",
+      "ResolvedTable": "Table in use",
+      "SecondaryTable": "Secondary table (quest)",
+      "SecondaryItems": "Secondary items (quest)",
+      "DropItems": "Drop items here.",
+      "InventoryHint": "Items in this token's inventory that its actor does not normally carry are lootable too, as are items flagged as loot.",
+      "None": "None",
+      "Checks": "Checks",
+      "LootCheck": "Loot check",
+      "Default": "Default",
+      "On": "Required",
+      "Off": "Not required",
+      "LootDc": "Loot DC",
+      "StealDc": "Steal DC",
+      "PassivePerception": "Passive Perception",
+      "Consequence": "Failed steal",
+      "Stored": "Stored loot",
+      "Quest": "Quest item",
+      "EmptyContainer": "Nothing left.",
+      "NotRolled": "Not rolled yet; rolls on the first successful loot or steal.",
+      "Reroll": "Roll / re-roll",
+      "Clear": "Clear",
+      "ResetLocks": "Reset attempts"
+    },
+    "Window": {
+      "LootTitle": "Loot: {name}",
+      "StealTitle": "Steal: {name}",
+      "StealHint": "You may take {count} item(s).",
+      "Take": "Take",
+      "TakeAll": "Take all",
+      "Trash": "Trash",
+      "TrashTitle": "Trash loot",
+      "TrashConfirm": "Throw away everything left on {name}? This cannot be undone."
+    },
+    "Notify": {
+      "LootFailed": "You find nothing of value.",
+      "StealFailed": "You fail to steal anything.",
+      "StealNoticed": "You have been noticed!",
+      "Empty": "There is nothing to take.",
+      "ItemPiles": "Interactive Looting: Item Piles is also active. Both modules may react to the same tokens."
+    },
+    "Chat": {
+      "StealSuccess": "{user} stole from {target}.",
+      "StealNoticed": "{target} notices {user} trying to steal!",
+      "CombatPrompt": "{user} was caught stealing from {target}, who is now hostile. Start combat?",
+      "Trashed": "{user} trashed the loot of {target}: {items}"
+    },
+    "Error": {
+      "noTarget": "Target a token first.",
+      "noLoot": "There is nothing to loot.",
+      "playerCharacter": "You cannot loot player characters.",
+      "noToken": "You need a token on this scene.",
+      "outOfRange": "You are too far away.",
+      "locked": "You cannot try that again.",
+      "noActor": "You have no character to act with.",
+      "noSkill": "No skill is configured for this check.",
+      "noGm": "A GM must be online.",
+      "notFound": "That token no longer exists.",
+      "stateChanged": "The situation has changed. Try again.",
+      "noRoll": "A roll is required.",
+      "notGranted": "You have not earned access to this loot.",
+      "stealLimit": "You cannot take that many items.",
+      "alreadyTaken": "Someone else took that already.",
+      "nothingSelected": "Select something first.",
+      "notAllowedWhileStealing": "Not possible while stealing.",
+      "trashNotAllowed": "You are not allowed to trash loot.",
+      "internal": "Something went wrong. See the GM's console.",
+      "unknownAction": "Unknown request."
+    }
+  }
+}

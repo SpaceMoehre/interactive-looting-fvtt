@@ -1,0 +1,50 @@
+<section class="il-tiers standard-form">
+  <p class="hint">{{localize "INTERACTIVE_LOOTING.Tiers.Hint"}}</p>
+  <div class="form-group">
+    <label>{{localize "INTERACTIVE_LOOTING.Tiers.DefaultTable"}}</label>
+    <select name="defaultTable">
+      <option value="">{{localize "INTERACTIVE_LOOTING.Config.None"}}</option>
+      {{selectOptions tables selected=defaultTable}}
+    </select>
+  </div>
+
+  <table class="il-tier-table">
+    <thead>
+      <tr>
+        <th>{{localize "INTERACTIVE_LOOTING.Tiers.Min"}}</th>
+        <th>{{localize "INTERACTIVE_LOOTING.Tiers.Max"}}</th>
+        <th>{{localize "INTERACTIVE_LOOTING.Tiers.Type"}}</th>
+        <th>{{localize "INTERACTIVE_LOOTING.Tiers.Table"}}</th>
+        <th>{{localize "INTERACTIVE_LOOTING.Tiers.Dc"}}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each tiers}}
+      <tr>
+        <td><input type="number" step="any" name="tiers.{{index}}.min" value="{{min}}"></td>
+        <td><input type="number" step="any" name="tiers.{{index}}.max" value="{{max}}"></td>
+        <td><input type="text" name="tiers.{{index}}.type" value="{{type}}"
+            placeholder="{{localize 'INTERACTIVE_LOOTING.Tiers.AnyType'}}"></td>
+        <td>
+          <select name="tiers.{{index}}.table">
+            <option value="">{{localize "INTERACTIVE_LOOTING.Config.None"}}</option>
+            {{selectOptions @root.tables selected=table}}
+          </select>
+        </td>
+        <td><input type="number" step="1" min="0" name="tiers.{{index}}.dc" value="{{dc}}"
+            placeholder="{{localize 'INTERACTIVE_LOOTING.Config.Default'}}"></td>
+        <td><a data-action="removeTier" data-index="{{index}}"
+            data-tooltip="{{localize 'INTERACTIVE_LOOTING.Tiers.Remove'}}"><i class="fa-solid fa-trash"></i></a></td>
+      </tr>
+      {{else}}
+      <tr><td colspan="6" class="hint">{{localize "INTERACTIVE_LOOTING.Tiers.Empty"}}</td></tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  <footer class="form-footer">
+    <button type="button" data-action="addTier"><i class="fa-solid fa-plus"></i> {{localize "INTERACTIVE_LOOTING.Tiers.Add"}}</button>
+    <button type="submit"><i class="fa-solid fa-floppy-disk"></i> {{localize "INTERACTIVE_LOOTING.Tiers.Save"}}</button>
+  </footer>
+</section>

@@ -1,0 +1,15 @@
+{
+  "name": "interactive-looting",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Foundry VTT module: loot dead tokens and steal from living ones.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "typecheck": "tsc -p jsconfig.json"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "typescript": "^5.9.3"
+  }
+}

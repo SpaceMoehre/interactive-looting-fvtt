@@ -1,0 +1,83 @@
+<div class="il-config">
+  <p class="hint">{{localize hintKey}}</p>
+
+  <fieldset>
+    <legend>{{localize "INTERACTIVE_LOOTING.Config.Tables"}}</legend>
+    <div class="form-group">
+      <label>{{localize "INTERACTIVE_LOOTING.Config.Table"}}</label>
+      <select name="flags.interactive-looting.config.table" data-il-table-drop>
+        <option value="">{{localize "INTERACTIVE_LOOTING.Config.Inherit"}}</option>
+        {{selectOptions tables selected=config.table}}
+      </select>
+    </div>
+    <p class="hint">{{localize "INTERACTIVE_LOOTING.Config.ResolvedTable"}}: {{resolvedTable}}</p>
+    <div class="form-group">
+      <label>{{localize "INTERACTIVE_LOOTING.Config.SecondaryTable"}}</label>
+      <select name="flags.interactive-looting.config.secondaryTable" data-il-table-drop>
+        <option value="">{{localize "INTERACTIVE_LOOTING.Config.None"}}</option>
+        {{selectOptions tables selected=config.secondaryTable}}
+      </select>
+    </div>
+    <div class="form-group stacked">
+      <label>{{localize "INTERACTIVE_LOOTING.Config.SecondaryItems"}}</label>
+      <ul class="il-drop" data-il-item-drop>
+        {{#each secondaryItems}}
+        <li><img src="{{img}}" alt=""> <span>{{name}}</span>
+          <a data-il-remove-item="{{uuid}}"><i class="fa-solid fa-xmark"></i></a></li>
+        {{else}}
+        <li class="hint">{{localize "INTERACTIVE_LOOTING.Config.DropItems"}}</li>
+        {{/each}}
+      </ul>
+      <p class="hint">{{localize "INTERACTIVE_LOOTING.Config.InventoryHint"}}</p>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "INTERACTIVE_LOOTING.Config.Checks"}}</legend>
+    <div class="form-group">
+      <label>{{localize "INTERACTIVE_LOOTING.Config.LootCheck"}}</label>
+      <select name="flags.interactive-looting.config.lootCheck">
+        {{selectOptions lootCheckChoices selected=config.lootCheck localize=true}}
+      </select>
+    </div>
+    <div class="form-group">
+      <label>{{localize "INTERACTIVE_LOOTING.Config.LootDc"}}</label>
+      <input type="number" name="flags.interactive-looting.config.lootDc" value="{{config.lootDc}}" min="0" step="1"
+        placeholder="{{localize 'INTERACTIVE_LOOTING.Config.Default'}}">
+    </div>
+    <div class="form-group">
+      <label>{{localize "INTERACTIVE_LOOTING.Config.StealDc"}}</label>
+      <input type="number" name="flags.interactive-looting.config.stealDc" value="{{config.stealDc}}" min="0" step="1"
+        placeholder="{{localize 'INTERACTIVE_LOOTING.Config.PassivePerception'}}">
+    </div>
+    <div class="form-group">
+      <label>{{localize "INTERACTIVE_LOOTING.Config.Consequence"}}</label>
+      <select name="flags.interactive-looting.config.consequence">
+        {{selectOptions consequenceChoices selected=config.consequence localize=true}}
+      </select>
+    </div>
+  </fieldset>
+
+  {{#unless isPrototype}}
+  <fieldset>
+    <legend>{{localize "INTERACTIVE_LOOTING.Config.Stored"}}</legend>
+    {{#if container}}
+    <ul class="il-preview">
+      {{#each container}}
+      <li><img src="{{img}}" alt=""> {{name}} ×{{quantity}}
+        {{#if quest}}<i class="fa-solid fa-star" data-tooltip="{{localize 'INTERACTIVE_LOOTING.Config.Quest'}}"></i>{{/if}}</li>
+      {{else}}
+      <li class="hint">{{localize "INTERACTIVE_LOOTING.Config.EmptyContainer"}}</li>
+      {{/each}}
+    </ul>
+    {{else}}
+    <p class="hint">{{localize "INTERACTIVE_LOOTING.Config.NotRolled"}}</p>
+    {{/if}}
+    <div class="il-config-buttons">
+      <button type="button" data-il-gm="reroll"><i class="fa-solid fa-dice"></i> {{localize "INTERACTIVE_LOOTING.Config.Reroll"}}</button>
+      <button type="button" data-il-gm="clear"><i class="fa-solid fa-eraser"></i> {{localize "INTERACTIVE_LOOTING.Config.Clear"}}</button>
+      <button type="button" data-il-gm="reset"><i class="fa-solid fa-unlock"></i> {{localize "INTERACTIVE_LOOTING.Config.ResetLocks"}}</button>
+    </div>
+  </fieldset>
+  {{/unless}}
+</div>
