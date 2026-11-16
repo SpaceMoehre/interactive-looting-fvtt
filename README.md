@@ -21,7 +21,7 @@ Players loot defeated tokens and pick the pockets of living NPCs with a skill ch
   - a table override, a secondary (quest) table and quest items (drag them in);
   - DC overrides and the failed-steal consequence;
   - a preview of the stored loot, with buttons to re-roll, clear it, or reset player attempts.
-- **Which table is used:** the first match wins, in this order: token → actor prototype → tier → default. The table is rolled on the first successful loot or steal, and the result is kept.
+- **Which table is used:** the first match wins, in this order: token → actor prototype → tier → default. The table is rolled on the first successful loot or steal, and the result is kept. Items you add to the token's inventory or to its quest items later are added to the loot, and ones you remove are taken out; use **Re-roll** in the Loot tab to roll the tables again.
 - **Inventory items:** items on a placed (unlinked) token that its actor doesn't normally carry are lootable as quest loot. Any item with `flags.interactive-looting.loot = true` is lootable too.
 - **Currency** comes from table text results such as `2d6 gp` or `[[3d10*5]] sp`.
 

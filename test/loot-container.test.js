@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { take, takeAll, trash, isEmpty, displayEntries } from "../scripts/core/loot-container.js";
+import { take, takeAll, trash, isEmpty, displayEntries, reconcile } from "../scripts/core/loot-container.js";
 
 /** @returns {import("../scripts/core/loot-container.js").LootContainer} */
 const container = () => ({
@@ -74,4 +74,47 @@ test("display entries are sorted by name, case-insensitively, mixing quest items
 
 test("display entries hide the quest marker from players", () => {
   assert.equal(displayEntries(container()).some((e) => "quest" in e), false);
+});
+
+test("reconcile: items added to the token's inventory after the roll are reported as new", () => {
+  /** @type {import("../scripts/core/loot-container.js").LootContainer} */
+  const c = { entries: [{ id: "x", kind: "item", name: "Ring", img: "", quantity: 1, quest: true, sourceItemId: "ring" }], questSources: [] };
+  const r = reconcile(c, { ownItemIds: ["ring", "gem"], questUuids: [] });
+  assert.deepEqual(r.addOwn, ["gem"]);
+  assert.deepEqual(r.container.entries.map((e) => e.id), ["x"]);
+});
+
+test("reconcile: inventory items the GM deleted disappear from the loot", () => {
+  /** @type {import("../scripts/core/loot-container.js").LootContainer} */
+  const c = { entries: [{ id: "x", kind: "item", name: "Ring", img: "", quantity: 1, quest: true, sourceItemId: "ring" }], questSources: [] };
+  const r = reconcile(c, { ownItemIds: [], questUuids: [] });
+  assert.deepEqual(r.container.entries, []);
+  assert.deepEqual(r.addOwn, []);
+});
+
+test("reconcile: quest items added in the Loot tab are added once, even after being taken", () => {
+  /** @type {import("../scripts/core/loot-container.js").LootContainer} */
+  const c = { entries: [], questSources: ["Item.letter"] };
+  const r = reconcile(c, { ownItemIds: [], questUuids: ["Item.letter", "Item.key"] });
+  assert.deepEqual(r.addUuids, ["Item.key"]);
+  assert.deepEqual(r.container.questSources, ["Item.letter", "Item.key"]);
+});
+
+test("reconcile: quest items removed in the Loot tab disappear from the loot", () => {
+  /** @type {import("../scripts/core/loot-container.js").LootContainer} */
+  const c = {
+    entries: [{ id: "k", kind: "item", name: "Key", img: "", quantity: 1, quest: true, sourceUuid: "Item.key" }],
+    questSources: ["Item.key"],
+  };
+  const r = reconcile(c, { ownItemIds: [], questUuids: [] });
+  assert.deepEqual(r.container.entries, []);
+  assert.deepEqual(r.container.questSources, []);
+});
+
+test("reconcile: containers saved before quest tracking treat current quest items as already added", () => {
+  /** @type {import("../scripts/core/loot-container.js").LootContainer} */
+  const c = { entries: [] };
+  const r = reconcile(c, { ownItemIds: [], questUuids: ["Item.letter"] });
+  assert.deepEqual(r.addUuids, []);
+  assert.deepEqual(r.container.questSources, ["Item.letter"]);
 });

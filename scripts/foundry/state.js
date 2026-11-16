@@ -9,6 +9,7 @@ import { MODULE_ID, specialItems, currencyFromResult, mergeDrafts } from "../cor
 import { resolveTable, matchTier } from "../core/table-resolution.js";
 import { isDead, interactionMode } from "../core/targeting.js";
 import { emptyAccess } from "../core/access.js";
+import { reconcile } from "../core/loot-container.js";
 import * as settings from "./settings.js";
 import * as system from "./system.js";
 
@@ -250,10 +251,37 @@ export async function rollContainer(token) {
   const primary = primaryTableUuid(token);
   if (primary) drafts.push(...(await drawTable(primary, false)));
   if (cfg.secondaryTable) drafts.push(...(await drawTable(cfg.secondaryTable, true)));
-  for (const uuid of cfg.secondaryItems) {
-    const d = await itemDraft(uuid, true);
-    if (d) drafts.push(d);
-  }
+  drafts.push(...(await questItemDrafts(cfg.secondaryItems)));
   drafts.push(...specialActorItems(token).map(ownItemDraft));
-  return { entries: mergeDrafts(drafts) };
+  return { entries: mergeDrafts(drafts), questSources: cfg.secondaryItems.slice() };
+}
+
+/** @param {string[]} uuids */
+async function questItemDrafts(uuids) {
+  const drafts = [];
+  for (const uuid of uuids) {
+    const d = await itemDraft(uuid, true);
+    if (d) drafts.push({ ...d, sourceUuid: uuid });
+  }
+  return drafts;
+}
+
+/**
+ * Add items the GM gave the token (inventory or Loot tab) after the loot was
+ * rolled, and drop ones the GM removed. GM only. Returns the current container.
+ * @param {TokenDocument} token
+ */
+export async function syncContainer(token) {
+  const c = container(token);
+  if (!c) return null;
+  const own = specialActorItems(token);
+  const r = reconcile(c, { ownItemIds: own.map((i) => i.id), questUuids: lootConfig(token).merged.secondaryItems });
+  const added = [
+    ...own.filter((i) => r.addOwn.includes(i.id)).map(ownItemDraft),
+    ...(await questItemDrafts(r.addUuids)),
+  ];
+  const next = { ...r.container, entries: [...r.container.entries, ...mergeDrafts(added)] };
+  if (JSON.stringify(next) === JSON.stringify(c)) return c;
+  await token.setFlag(MODULE_ID, "container", next);
+  return next;
 }

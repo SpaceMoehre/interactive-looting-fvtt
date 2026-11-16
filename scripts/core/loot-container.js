@@ -13,9 +13,11 @@
  * @property {Record<string, any>} [itemData]  item only, full item source to create on the taker
  * @property {string} [tooltip]           optional plain-text description for the hover tooltip
  * @property {string} [sourceItemId]      item on the token's actor this entry was taken from (moved on take)
+ * @property {string} [sourceUuid]        Loot-tab quest item this entry came from
  *
  * @typedef {object} LootContainer
  * @property {LootEntry[]} entries
+ * @property {string[]} [questSources]  Loot-tab quest item UUIDs already put in (so taken ones aren't re-added)
  *
  * @typedef {"loot"|"steal"} Mode
  * @typedef {{ok: true, container: LootContainer, taken: LootEntry[]} | {ok: false, error: string}} TakeResult
@@ -63,6 +65,31 @@ export function trash(container, { protectQuest }) {
   return {
     removed: container.entries.filter((e) => !keep(e)),
     container: { ...container, entries: container.entries.filter(keep) },
+  };
+}
+
+/**
+ * Bring a rolled container up to date with the token's live sources: its own
+ * inventory and the quest items set in the Loot tab. Table results stay frozen.
+ * Inventory items are deleted from the token when taken, so any still present
+ * but missing here are new. Quest UUIDs are remembered once added, so taking
+ * one doesn't bring it back.
+ * @param {LootContainer} container
+ * @param {{ownItemIds: string[], questUuids: string[]}} live
+ * @returns {{container: LootContainer, addOwn: string[], addUuids: string[]}}
+ */
+export function reconcile(container, { ownItemIds, questUuids }) {
+  const own = new Set(ownItemIds);
+  const quest = new Set(questUuids);
+  const entries = container.entries.filter(
+    (e) => (!e.sourceItemId || own.has(e.sourceItemId)) && (!e.sourceUuid || quest.has(e.sourceUuid)),
+  );
+  const inContainer = new Set(entries.map((e) => e.sourceItemId).filter(Boolean));
+  const known = new Set(container.questSources ?? questUuids);
+  return {
+    container: { ...container, entries, questSources: questUuids.slice() },
+    addOwn: ownItemIds.filter((id) => !inContainer.has(id)),
+    addUuids: questUuids.filter((u) => !known.has(u)),
   };
 }
 

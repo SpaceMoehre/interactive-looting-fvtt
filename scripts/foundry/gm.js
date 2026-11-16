@@ -79,7 +79,7 @@ function validate(userId, p) {
 
 /** @param {TokenDocument} target */
 async function ensureContainer(target) {
-  const existing = state.container(target);
+  const existing = await state.syncContainer(target);
   if (existing) return existing;
   const c = await state.rollContainer(target);
   await target.setFlag(MODULE_ID, "container", c);
@@ -120,7 +120,10 @@ async function prepare(userId, p) {
   if (attemptBlock(state.access(ctx.target), userId)) return { ok: false, error: "locked" };
   const acc = state.access(ctx.target);
   const granted = mode === "loot" ? Boolean(acc.searched[userId]) : (acc.grants[userId] ?? 0) > 0;
-  if (granted) return { ok: true, mode, needsRoll: false, granted: true };
+  if (granted) {
+    await state.syncContainer(ctx.target);
+    return { ok: true, mode, needsRoll: false, granted: true };
+  }
   const needsRoll = mode === "steal" || lootDc(ctx.target) !== null;
   if (needsRoll && !ctx.actor) return { ok: false, error: "noActor" };
   return { ok: true, mode, needsRoll, skill: skillFor(mode), version: game.modules.get(MODULE_ID)?.version };
@@ -194,7 +197,7 @@ async function takeEntries(userId, p) {
   const { ctx, mode } = v;
   if (mode !== p.mode) return { ok: false, error: "stateChanged" };
   if (!ctx.actor) return { ok: false, error: "noActor" };
-  const c = state.container(ctx.target);
+  const c = await state.syncContainer(ctx.target);
   if (!c) return { ok: false, error: "notGranted" };
   const acc = state.access(ctx.target);
 

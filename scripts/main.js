@@ -10,6 +10,7 @@ import * as gm from "./foundry/gm.js";
 import { registerKeybinding, patchDoubleClick, addHudButton } from "./foundry/interaction.js";
 import { LootWindow } from "./foundry/loot-window.js";
 import { injectTab } from "./foundry/token-config.js";
+import * as state from "./foundry/state.js";
 
 const TEMPLATES = ["loot-window", "token-config", "tier-config"].map((n) => `modules/${MODULE_ID}/templates/${n}.hbs`);
 
@@ -39,6 +40,24 @@ Hooks.on("updateToken", (token, changes) => {
   }
 });
 Hooks.on("deleteToken", (token) => LootWindow.refresh(token, true));
+
+// Items the GM gives a token after its loot was rolled are added to the loot.
+// Only the active GM writes; the resulting flag update re-renders open windows.
+/** @param {TokenDocument} token */
+const syncLoot = (token) => {
+  if (!game.users.activeGM?.isSelf || !state.container(token)) return;
+  state.syncContainer(token).catch((err) => console.error(`${MODULE_ID} | failed to update loot`, err));
+};
+Hooks.on("createItem", (item) => {
+  /** @type {any} */
+  const actor = item.parent;
+  if (!(actor instanceof Actor)) return;
+  const tokens = actor.isToken ? [actor.token] : (actor.getDependentTokens?.() ?? []);
+  for (const token of tokens) if (token) syncLoot(token);
+});
+Hooks.on("updateToken", (token, changes) => {
+  if (foundry.utils.hasProperty(changes, `flags.${MODULE_ID}.config`)) syncLoot(token);
+});
 
 Hooks.on("renderTokenHUD", (hud, html) => addHudButton(hud, html instanceof HTMLElement ? html : html[0]));
 
