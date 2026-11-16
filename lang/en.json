@@ -112,6 +112,7 @@
       "TrashConfirm": "Throw away everything left on {name}? This cannot be undone."
     },
     "Notify": {
+      "VersionMismatch": "Interactive Looting: the GM is running version {gm}, you are running {mine}. The GM should reload Foundry (F5).",
       "LootFailed": "You find nothing of value.",
       "StealFailed": "You fail to steal anything.",
       "StealNoticed": "You have been noticed!",

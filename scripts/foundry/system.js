@@ -74,6 +74,15 @@ export async function rollSkill(actor, skill) {
 }
 
 /**
+ * Correct skill keys that older versions saved wrongly (0.1.0 used "slh" for
+ * dnd5e Sleight of Hand, which is "slt").
+ * @param {string} skill
+ */
+export function fixSkillKey(skill) {
+  return game.system.id === "dnd5e" && skill === "slh" ? "slt" : skill;
+}
+
+/**
  * Whether the actor has this skill key. Only checkable where the system exposes
  * skills in a known place; elsewhere we assume it does.
  * @param {Actor} actor

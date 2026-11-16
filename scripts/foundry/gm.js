@@ -60,9 +60,7 @@ function stealDc(target) {
 
 /** @param {"loot"|"steal"} mode */
 function skillFor(mode) {
-  const skill = settings.get(mode === "loot" ? "lootSkill" : "stealSkill");
-  // 0.1.0 shipped the wrong dnd5e key; worlds may still have it saved.
-  return game.system.id === "dnd5e" && skill === "slh" ? "slt" : skill;
+  return system.fixSkillKey(settings.get(mode === "loot" ? "lootSkill" : "stealSkill"));
 }
 
 /**
@@ -125,7 +123,7 @@ async function prepare(userId, p) {
   if (granted) return { ok: true, mode, needsRoll: false, granted: true };
   const needsRoll = mode === "steal" || lootDc(ctx.target) !== null;
   if (needsRoll && !ctx.actor) return { ok: false, error: "noActor" };
-  return { ok: true, mode, needsRoll, skill: skillFor(mode) };
+  return { ok: true, mode, needsRoll, skill: skillFor(mode), version: game.modules.get(MODULE_ID)?.version };
 }
 
 /**

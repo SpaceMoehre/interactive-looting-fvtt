@@ -17,6 +17,22 @@ export function notifyError(error) {
   ui.notifications.warn(game.i18n.localize(`INTERACTIVE_LOOTING.Error.${error}`));
 }
 
+let versionWarned = false;
+
+/**
+ * The GM's client does the checks; if it runs another module version (not
+ * reloaded after an update), say so once instead of failing mysteriously.
+ * @param {string|undefined} gmVersion
+ */
+function warnVersionMismatch(gmVersion) {
+  const mine = game.modules.get(MODULE_ID)?.version;
+  if (versionWarned || gmVersion === mine) return;
+  versionWarned = true;
+  ui.notifications.warn(
+    game.i18n.format("INTERACTIVE_LOOTING.Notify.VersionMismatch", { gm: gmVersion ?? "?", mine: mine ?? "?" }),
+  );
+}
+
 /** @type {Set<string>} */
 const busy = new Set();
 
@@ -40,10 +56,12 @@ export async function startInteraction(target) {
       const actor = own?.actor ?? game.user.character;
       if (!actor) return notifyError("noActor");
       if (!prep.skill) return notifyError("noSkill");
-      if (!system.hasSkill(actor, prep.skill)) {
-        return ui.notifications.error(game.i18n.format("INTERACTIVE_LOOTING.Error.unknownSkill", { skill: prep.skill }));
+      warnVersionMismatch(prep.version);
+      const skill = system.fixSkillKey(prep.skill);
+      if (!system.hasSkill(actor, skill)) {
+        return ui.notifications.error(game.i18n.format("INTERACTIVE_LOOTING.Error.unknownSkill", { skill }));
       }
-      total = await system.rollSkill(actor, prep.skill);
+      total = await system.rollSkill(actor, skill);
       if (total === null) return; // roll dialog cancelled
     }
 
