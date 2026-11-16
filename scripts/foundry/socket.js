@@ -29,11 +29,19 @@ function execute(action, userId, payload) {
   const run = async () => {
     const handler = handlers[action];
     if (!handler) return { ok: false, error: "unknownAction" };
+    /** @type {ReturnType<typeof setTimeout>|undefined} */
+    let timer;
+    // A handler that never settles must not block every later request.
+    const stuck = new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`no answer after ${TIMEOUT_MS / 1000}s`)), TIMEOUT_MS);
+    });
     try {
-      return await handler(userId, payload);
+      return await Promise.race([handler(userId, payload), stuck]);
     } catch (err) {
       console.error(`${MODULE_ID} | ${action} failed`, err);
       return { ok: false, error: "internal" };
+    } finally {
+      clearTimeout(timer);
     }
   };
   const result = queue.then(run, run);

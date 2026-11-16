@@ -77,6 +77,16 @@ function validate(userId, p) {
   return { ctx, mode: ev.mode };
 }
 
+/**
+ * Bring stored loot up to date with the token's items before judging it: an
+ * emptied container would otherwise hide items the GM added later ("no loot").
+ * @param {TargetPayload} p
+ */
+async function syncTarget(p) {
+  const target = game.scenes.get(p?.sceneId)?.tokens.get(p?.tokenId);
+  if (target) await state.syncContainer(target);
+}
+
 /** @param {TokenDocument} target */
 async function ensureContainer(target) {
   const existing = await state.syncContainer(target);
@@ -114,15 +124,13 @@ function cleanupIfEmpty(target) {
  * @param {TargetPayload} p
  */
 async function prepare(userId, p) {
+  await syncTarget(p);
   const v = validate(userId, p);
   if (!v.ctx) return { ok: false, error: v.error };
   const { ctx, mode } = v;
   if (attemptBlock(state.access(ctx.target), userId)) return { ok: false, error: "locked" };
   const acc = state.access(ctx.target);
-  if (opensWithoutRoll(acc, userId, mode)) {
-    await state.syncContainer(ctx.target);
-    return { ok: true, mode, needsRoll: false, granted: true };
-  }
+  if (opensWithoutRoll(acc, userId, mode)) return { ok: true, mode, needsRoll: false, granted: true };
   const needsRoll = mode === "steal" || lootDc(ctx.target) !== null;
   if (needsRoll && !ctx.actor) return { ok: false, error: "noActor" };
   return { ok: true, mode, needsRoll, skill: skillFor(mode), version: game.modules.get(MODULE_ID)?.version };

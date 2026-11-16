@@ -13,7 +13,7 @@ const SILENT = new Set(["noLoot", "playerCharacter"]);
 
 /** @param {string} error */
 export function notifyError(error) {
-  if (SILENT.has(error)) return;
+  if (SILENT.has(error)) return console.info(`${MODULE_ID} | nothing to do on this token: ${error}`);
   ui.notifications.warn(game.i18n.localize(`INTERACTIVE_LOOTING.Error.${error}`));
 }
 
