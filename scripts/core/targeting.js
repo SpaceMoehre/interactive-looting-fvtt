@@ -11,14 +11,13 @@ export function isDead({ statuses, hp }, { useDeadStatus, useZeroHp }) {
 
 /**
  * @typedef {"loot"|"steal"} Mode
- * @typedef {"playerCharacter"|"noLoot"|"noToken"|"outOfRange"} BlockReason
+ * @typedef {"playerCharacter"|"noToken"|"outOfRange"} BlockReason
  */
 
 /**
  * Decide what a player may do with a target token.
  * @param {object} t
  * @param {boolean} t.isPlayerCharacter
- * @param {boolean} t.hasLoot         token has any loot source configured or stored
  * @param {boolean} t.dead
  * @param {number|null} t.distance    distance from the player's token, null if unknown
  * @param {number|null} t.maxDistance null disables the range requirement
@@ -27,7 +26,6 @@ export function isDead({ statuses, hp }, { useDeadStatus, useZeroHp }) {
  */
 export function interactionMode(t) {
   if (t.isPlayerCharacter) return { mode: null, reason: "playerCharacter" };
-  if (!t.hasLoot) return { mode: null, reason: "noLoot" };
   if (t.maxDistance != null) {
     if (!t.hasOwnToken) return { mode: null, reason: "noToken" };
     if (t.distance == null || t.distance > t.maxDistance) return { mode: null, reason: "outOfRange" };

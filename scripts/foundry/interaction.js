@@ -47,6 +47,7 @@ export async function startInteraction(target) {
     const base = payloadFor(target);
     const prep = await request("prepare", base);
     if (!prep.ok) return notifyError(prep.error);
+    if (prep.removed) return ui.notifications.info(game.i18n.localize("INTERACTIVE_LOOTING.Notify.Empty"));
 
     if (prep.granted) return LootWindow.open(target, prep.mode);
 
@@ -71,7 +72,7 @@ export async function startInteraction(target) {
       const key = prep.mode === "loot" ? "LootFailed" : res.noticed ? "StealNoticed" : "StealFailed";
       return ui.notifications.info(game.i18n.localize(`INTERACTIVE_LOOTING.Notify.${key}`));
     }
-    if (res.empty) return ui.notifications.info(game.i18n.localize("INTERACTIVE_LOOTING.Notify.Empty"));
+    if (res.removed) return ui.notifications.info(game.i18n.localize("INTERACTIVE_LOOTING.Notify.Empty"));
     LootWindow.open(target, prep.mode);
   } finally {
     busy.delete(target.id);

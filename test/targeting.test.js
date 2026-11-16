@@ -23,7 +23,6 @@ test("living, unknown-HP and disabled-rule cases are not dead", () => {
 /** @param {Partial<Parameters<typeof interactionMode>[0]>} over */
 const target = (over = {}) => ({
   isPlayerCharacter: false,
-  hasLoot: true,
   dead: false,
   distance: 5,
   maxDistance: 5,
@@ -46,8 +45,9 @@ test("player characters are never targetable", () => {
   });
 });
 
-test("tokens without configured loot do nothing", () => {
-  assert.deepEqual(interactionMode(target({ hasLoot: false })), { mode: null, reason: "noLoot" });
+test("tokens without loot can still be looted or stolen from (the window shows them empty)", () => {
+  assert.deepEqual(interactionMode(target({ dead: true })), { mode: "loot" });
+  assert.deepEqual(interactionMode(target({ dead: false })), { mode: "steal" });
 });
 
 test("player must control a token within range unless range is disabled", () => {

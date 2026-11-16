@@ -106,14 +106,19 @@ function whisper(content, userIds) {
   return ChatMessage.create({ content, whisper: [...new Set([...userIds, ...gms])] });
 }
 
-/** Delete or keep a dead token whose loot ran out. @param {TokenDocument} target */
+const removesEmpty = () => settings.get("removeEmpty") === "delete";
+
+/**
+ * Delete or keep a dead token whose loot ran out. Returns whether it will be removed.
+ * @param {TokenDocument} target
+ */
 function cleanupIfEmpty(target) {
   const c = state.container(target);
-  if (!c || !isEmpty(c) || !state.tokenIsDead(target)) return;
-  if (settings.get("removeEmpty") !== "delete") return;
+  if (!c || !isEmpty(c) || !state.tokenIsDead(target) || !removesEmpty()) return false;
   setTimeout(() => {
     if (target.parent?.tokens.has(target.id)) target.delete();
   }, REMOVE_DELAY_MS);
+  return true;
 }
 
 /* -------------------------------------------- */
@@ -129,6 +134,14 @@ async function prepare(userId, p) {
   if (!v.ctx) return { ok: false, error: v.error };
   const { ctx, mode } = v;
   if (attemptBlock(state.access(ctx.target), userId)) return { ok: false, error: "locked" };
+  // A dead token with nothing on it: no search needed; remove it or show it empty.
+  if (mode === "loot" && !state.hasLoot(ctx.target)) {
+    if (removesEmpty()) {
+      await ctx.target.delete();
+      return { ok: true, mode, removed: true };
+    }
+    return { ok: true, mode, needsRoll: false, granted: true };
+  }
   const acc = state.access(ctx.target);
   if (opensWithoutRoll(acc, userId, mode)) return { ok: true, mode, needsRoll: false, granted: true };
   const needsRoll = mode === "steal" || lootDc(ctx.target) !== null;
@@ -161,11 +174,8 @@ async function attempt(userId, p) {
     acc = recordAttempt(acc, userId, { mode, success, lock: false, stealLimit });
     await ctx.target.setFlag(MODULE_ID, "access", acc);
     if (mode === "steal") await whisper(t("Chat.StealSuccess", { user: userName, target: targetName }), [userId]);
-    if (isEmpty(c)) {
-      cleanupIfEmpty(ctx.target);
-      return { ok: true, success: true, empty: true };
-    }
-    return { ok: true, success: true };
+    const removed = isEmpty(c) && cleanupIfEmpty(ctx.target);
+    return { ok: true, success: true, removed };
   }
 
   if (mode === "loot") {

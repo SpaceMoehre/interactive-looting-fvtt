@@ -148,7 +148,6 @@ export function evaluate(target, own, { ignoreRange = false } = {}) {
   const sameScene = Boolean(own && own.parent === target.parent);
   return interactionMode({
     isPlayerCharacter: system.isPlayerCharacter(actor),
-    hasLoot: hasLoot(target),
     dead: tokenIsDead(target),
     distance: !ignoreRange && sameScene && own ? tokenDistance(own, target) : null,
     maxDistance: !ignoreRange && max > 0 ? max : null,

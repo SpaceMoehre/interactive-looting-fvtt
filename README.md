@@ -11,7 +11,8 @@ Players loot defeated tokens and pick the pockets of living NPCs with a skill ch
   - A failed steal is silent, noticed or hostile, depending on the setting.
 - The loot window lists each item's icon, name and amount with a checkbox. It has **Take**, **Take all** and **Trash** buttons (Trash asks for confirmation).
   - Open windows stay in sync between players. If two players click the same item, the first click wins.
-- When the last item is taken from a dead token, the token is removed (this can be turned off in the settings).
+- When the last item is taken from a dead token, the token is removed. Looting a dead token that has nothing removes it right away. With **Empty dead tokens → Keep** in the settings, the token stays and the window shows it empty instead.
+- Stealing from a living token with nothing on it still takes a roll; on a success the window is empty.
 - A GM must be online. The GM's client checks every request and makes the changes.
 
 ## For the GM

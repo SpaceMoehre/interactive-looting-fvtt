@@ -4,7 +4,7 @@
  * the GM updates the token (live sync between players).
  */
 import { MODULE_ID } from "../core/loot-sources.js";
-import { displayEntries, isEmpty } from "../core/loot-container.js";
+import { displayEntries } from "../core/loot-container.js";
 import { request } from "./socket.js";
 import * as state from "./state.js";
 import * as settings from "./settings.js";
@@ -76,9 +76,8 @@ export class LootWindow extends HandlebarsApplicationMixin(ApplicationV2) {
     return state.access(this.token).grants[game.user.id] ?? 0;
   }
 
+  /** An empty window stays open (it shows "Nothing left"); a removed token closes it. */
   shouldClose() {
-    const c = state.container(this.token);
-    if (!c || isEmpty(c)) return true;
     return this.mode === "steal" && this.remainingSteals <= 0;
   }
 
@@ -100,7 +99,7 @@ export class LootWindow extends HandlebarsApplicationMixin(ApplicationV2) {
       isLoot,
       remaining: this.remainingSteals,
       canTrash: isLoot && (perm === "everyone" || (perm === "gm" && game.user.isGM)),
-      busy: this.busy,
+      locked: this.busy || entries.length === 0,
     };
   }
 

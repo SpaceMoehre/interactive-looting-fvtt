@@ -41,7 +41,7 @@
       "trashQuest": { "Name": "Trash removes quest items", "Hint": "When off, quest items (secondary table and items, special inventory) survive trashing." },
       "removeEmpty": {
         "Name": "Empty dead tokens",
-        "Hint": "What to do with a dead token once all its loot is gone.",
+        "Hint": "What to do with a dead token once all its loot is gone, or when someone tries to loot a dead token that has nothing: remove it right away, or keep it and show an empty loot window.",
         "delete": "Remove from the scene",
         "keep": "Keep on the scene"
       },
@@ -108,6 +108,7 @@
       "Take": "Take",
       "TakeAll": "Take all",
       "Trash": "Trash",
+      "Empty": "Nothing left.",
       "TrashTitle": "Trash loot",
       "TrashConfirm": "Throw away everything left on {name}? This cannot be undone."
     },

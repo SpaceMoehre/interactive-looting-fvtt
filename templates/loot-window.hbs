@@ -12,19 +12,21 @@
         <input type="checkbox" data-entry="{{id}}" {{checked checked}}>
       </label>
     </li>
+    {{else}}
+    <li class="il-hint">{{localize "INTERACTIVE_LOOTING.Window.Empty"}}</li>
     {{/each}}
   </ul>
   <footer class="il-buttons">
-    <button type="button" data-action="take" {{disabled busy}}>
+    <button type="button" data-action="take" {{disabled locked}}>
       <i class="fa-solid fa-hand"></i> {{localize "INTERACTIVE_LOOTING.Window.Take"}}
     </button>
     {{#if isLoot}}
-    <button type="button" data-action="takeAll" {{disabled busy}}>
+    <button type="button" data-action="takeAll" {{disabled locked}}>
       <i class="fa-solid fa-hands"></i> {{localize "INTERACTIVE_LOOTING.Window.TakeAll"}}
     </button>
     {{/if}}
     {{#if canTrash}}
-    <button type="button" class="il-trash" data-action="trash" {{disabled busy}}>
+    <button type="button" class="il-trash" data-action="trash" {{disabled locked}}>
       <i class="fa-solid fa-trash"></i> {{localize "INTERACTIVE_LOOTING.Window.Trash"}}
     </button>
     {{/if}}
