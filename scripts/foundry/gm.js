@@ -6,7 +6,7 @@
 import { MODULE_ID } from "../core/loot-sources.js";
 import { take, takeAll, trash, isEmpty } from "../core/loot-container.js";
 import { lootCheckDc, stealCheckDc, failureConsequence } from "../core/checks.js";
-import { recordAttempt, attemptBlock, takeBlock, consumeTake } from "../core/access.js";
+import { recordAttempt, attemptBlock, takeBlock, consumeTake, opensWithoutRoll } from "../core/access.js";
 import * as settings from "./settings.js";
 import * as state from "./state.js";
 import * as system from "./system.js";
@@ -119,8 +119,7 @@ async function prepare(userId, p) {
   const { ctx, mode } = v;
   if (attemptBlock(state.access(ctx.target), userId)) return { ok: false, error: "locked" };
   const acc = state.access(ctx.target);
-  const granted = mode === "loot" ? Boolean(acc.searched[userId]) : (acc.grants[userId] ?? 0) > 0;
-  if (granted) {
+  if (opensWithoutRoll(acc, userId, mode)) {
     await state.syncContainer(ctx.target);
     return { ok: true, mode, needsRoll: false, granted: true };
   }

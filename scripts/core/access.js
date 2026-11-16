@@ -21,9 +21,21 @@ export function emptyAccess() {
 export function recordAttempt(s, userId, { mode, success, lock, stealLimit }) {
   const next = { locks: { ...s.locks }, searched: { ...s.searched }, grants: { ...s.grants } };
   if (success && mode === "loot") next.searched[userId] = true;
-  if (success && mode === "steal") next.grants[userId] = stealLimit;
+  // Every steal attempt replaces what the last one granted, so a failure cancels unused takes.
+  if (mode === "steal") next.grants[userId] = success ? stealLimit : 0;
   if (!success && lock) next.locks[userId] = true;
   return next;
+}
+
+/**
+ * Whether the user may open the loot again without rolling. A passed search
+ * lasts; stealing always needs a new roll.
+ * @param {AccessState} s
+ * @param {string} userId
+ * @param {"loot"|"steal"} mode
+ */
+export function opensWithoutRoll(s, userId, mode) {
+  return mode === "loot" && Boolean(s.searched[userId]);
 }
 
 /**

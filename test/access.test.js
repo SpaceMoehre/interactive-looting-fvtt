@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { emptyAccess, recordAttempt, attemptBlock, takeBlock, consumeTake } from "../scripts/core/access.js";
+import { emptyAccess, recordAttempt, attemptBlock, takeBlock, consumeTake, opensWithoutRoll } from "../scripts/core/access.js";
 
 const U = "user1";
 
@@ -52,4 +52,18 @@ test("recordAttempt does not mutate its input", () => {
   const s = emptyAccess();
   recordAttempt(s, U, { mode: "steal", success: false, lock: true, stealLimit: 1 });
   assert.deepEqual(s, emptyAccess());
+});
+
+test("a failed steal cancels takes left over from an earlier success", () => {
+  let s = recordAttempt(emptyAccess(), U, { mode: "steal", success: true, lock: false, stealLimit: 1 });
+  s = recordAttempt(s, U, { mode: "steal", success: false, lock: false, stealLimit: 1 });
+  assert.equal(takeBlock(s, U, "steal", 1), "notGranted");
+});
+
+test("stealing always needs a new roll; a passed search lets the user reopen the loot", () => {
+  let s = recordAttempt(emptyAccess(), U, { mode: "steal", success: true, lock: false, stealLimit: 1 });
+  assert.equal(opensWithoutRoll(s, U, "steal"), false);
+  s = recordAttempt(s, U, { mode: "loot", success: true, lock: false, stealLimit: 1 });
+  assert.equal(opensWithoutRoll(s, U, "loot"), true);
+  assert.equal(opensWithoutRoll(emptyAccess(), U, "loot"), false);
 });
