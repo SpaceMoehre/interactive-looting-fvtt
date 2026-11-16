@@ -4,8 +4,11 @@ name: Release
 # The release carries:
 #   module.json  - the Foundry manifest (version taken from the tag)
 #   module.zip   - the installable module
-# Both manifest and download URLs point at /releases/latest/, so the manifest
-# URL that users install from never changes.
+# The manifest URL points at /releases/latest/, so the URL users install from
+# never changes; the download URL is pinned to this tag, so every listed version
+# installs its own files.
+# If the FOUNDRY_RELEASE_TOKEN secret is set, the version is also published to
+# the Foundry package listing; without it that step is skipped.
 
 on:
   push:
@@ -34,6 +37,8 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # release notes need the previous tag
 
       - name: Compute version and URLs
         run: |
@@ -42,6 +47,7 @@ jobs:
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "REPO_URL=$REPO_URL" >> "$GITHUB_ENV"
           echo "LATEST=$REPO_URL/releases/latest/download" >> "$GITHUB_ENV"
+          echo "PINNED=$REPO_URL/releases/download/$GITHUB_REF_NAME" >> "$GITHUB_ENV"
 
       - name: Build manifest
         run: |
@@ -49,7 +55,7 @@ jobs:
           jq --arg version "$VERSION" \
              --arg url "$REPO_URL" \
              --arg manifest "$LATEST/module.json" \
-             --arg download "$LATEST/module.zip" \
+             --arg download "$PINNED/module.zip" \
              '.version = $version | .url = $url | .manifest = $manifest | .download = $download' \
              module.json > dist/module.json
           cat dist/module.json
@@ -63,10 +69,47 @@ jobs:
           (cd dist/pkg && zip -r ../module.zip .)
           unzip -l dist/module.zip
 
+      - name: Write release notes
+        run: |
+          PREV=$(git describe --tags --abbrev=0 "$GITHUB_REF_NAME^" 2>/dev/null || true)
+          {
+            echo "## Changes"
+            echo
+            git log --no-merges --pretty='- %s' ${PREV:+"$PREV.."}"$GITHUB_REF_NAME"
+            if [ -n "$PREV" ]; then
+              echo
+              echo "**Full diff:** $REPO_URL/compare/$PREV...$GITHUB_REF_NAME"
+            fi
+          } > dist/notes.md
+          cat dist/notes.md
+
       - name: Publish GitHub release
         run: |
           gh release create "$GITHUB_REF_NAME" \
             dist/module.json dist/module.zip \
             --title "$GITHUB_REF_NAME" \
-            --generate-notes \
+            --notes-file dist/notes.md \
             --latest
+
+      - name: Publish to the Foundry package listing
+        env:
+          FOUNDRY_RELEASE_TOKEN: ${{ secrets.FOUNDRY_RELEASE_TOKEN }}
+        run: |
+          if [ -z "$FOUNDRY_RELEASE_TOKEN" ]; then
+            echo "FOUNDRY_RELEASE_TOKEN is not set; skipping the Foundry listing."
+            exit 0
+          fi
+          jq -n --slurpfile m dist/module.json \
+             --arg manifest "$PINNED/module.json" \
+             --arg notes "$REPO_URL/releases/tag/$GITHUB_REF_NAME" \
+             '{id: $m[0].id, release: {version: $m[0].version, manifest: $manifest, notes: $notes,
+               compatibility: {minimum: $m[0].compatibility.minimum, verified: $m[0].compatibility.verified, maximum: ""}}}' \
+             > dist/foundry-release.json
+          cat dist/foundry-release.json
+          STATUS=$(curl -sS -o dist/foundry-response.json -w '%{http_code}' \
+            -X POST https://foundryvtt.com/_api/packages/release_version/ \
+            -H "Content-Type: application/json" \
+            -H "Authorization: $FOUNDRY_RELEASE_TOKEN" \
+            --data @dist/foundry-release.json)
+          cat dist/foundry-response.json; echo
+          [ "$STATUS" = 200 ] || { echo "::error::Foundry rejected the release (HTTP $STATUS)"; exit 1; }

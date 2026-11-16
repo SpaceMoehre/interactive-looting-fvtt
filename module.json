@@ -5,12 +5,13 @@
   "version": "0.1.0",
   "authors": [
     {
-      "name": "Simon"
+      "name": "SpaceMoehre",
+      "url": "https://github.com/SpaceMoehre"
     }
   ],
   "compatibility": {
     "minimum": "14",
-    "verified": "14"
+    "verified": "14.369"
   },
   "esmodules": [
     "scripts/main.js"
@@ -28,5 +29,9 @@
   "socket": true,
   "url": "https://github.com/SpaceMoehre/interactive-looting-fvtt",
   "manifest": "https://github.com/SpaceMoehre/interactive-looting-fvtt/releases/latest/download/module.json",
-  "download": "https://github.com/SpaceMoehre/interactive-looting-fvtt/releases/latest/download/module.zip"
+  "download": "https://github.com/SpaceMoehre/interactive-looting-fvtt/releases/latest/download/module.zip",
+  "license": "LICENSE",
+  "readme": "README.md",
+  "bugs": "https://github.com/SpaceMoehre/interactive-looting-fvtt/issues",
+  "changelog": "https://github.com/SpaceMoehre/interactive-looting-fvtt/releases"
 }

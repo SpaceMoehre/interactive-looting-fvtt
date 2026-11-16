@@ -36,11 +36,15 @@ https://github.com/SpaceMoehre/interactive-looting-fvtt/releases/latest/download
 
 ## Releasing
 
-Push a version tag. CI runs the tests, stamps the version into `module.json` and publishes a GitHub release with `module.json` and `module.zip`:
+Push a version tag. CI runs the tests, stamps the version into `module.json` and publishes a GitHub release with `module.json`, `module.zip` and notes listing the commits since the previous tag:
 
 ```bash
 git tag v0.2.0 && git push origin v0.2.0
 ```
+
+The manifest URL above always serves the newest release. Each release's `module.json` downloads the `module.zip` of its own tag, so every version installs its own files.
+
+**Foundry package listing.** Once the package is approved on foundryvtt.com, open its admin page, create a **release token**, and add it to this repository under **Settings → Secrets and variables → Actions** as `FOUNDRY_RELEASE_TOKEN`. From then on every tag is also published to the listing, with the compatibility from `module.json`. Without the secret, that step is skipped.
 
 ## Development
 
@@ -51,3 +55,7 @@ npm run typecheck # tsc --checkJs over scripts/core and test
 ```
 
 `scripts/core` contains the rules as pure functions, which are unit-tested. `scripts/foundry` is the Foundry adapter (settings, socket, GM handlers, UI) and has no unit tests.
+
+## License
+
+[GPL-3.0](LICENSE) © SpaceMoehre
