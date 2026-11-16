@@ -50,7 +50,7 @@
       "hpPath": { "Name": "Data path: hit points", "Hint": "Actor data path for current HP (used by the 0 HP rule)." },
       "passivePath": { "Name": "Data path: passive Perception", "Hint": "Actor data path for the target's passive Perception (steal DC)." },
       "lootSkill": { "Name": "Loot skill", "Hint": "Skill key rolled to loot (D&D 5e: inv)." },
-      "stealSkill": { "Name": "Steal skill", "Hint": "Skill key rolled to steal (D&D 5e: slh)." },
+      "stealSkill": { "Name": "Steal skill", "Hint": "Skill key rolled to steal (D&D 5e: slt)." },
       "skillModPath": { "Name": "Data path: skill modifier", "Hint": "Fallback when the system has no skill roll API. {skill} is replaced by the skill key; 1d20 + this value is rolled." },
       "currencyPath": { "Name": "Data path: currency", "Hint": "Actor data path of the currency object (D&D 5e: system.currency)." },
       "denominations": { "Name": "Currency denominations", "Hint": "Comma-separated denominations recognised in table results such as \"2d6 gp\"." },
@@ -126,6 +126,7 @@
     },
     "Error": {
       "noTarget": "Target a token first.",
+      "unknownSkill": "Your character has no skill \"{skill}\". Ask the GM to check the skill setting in Interactive Looting.",
       "noLoot": "There is nothing to loot.",
       "playerCharacter": "You cannot loot player characters.",
       "noToken": "You need a token on this scene.",

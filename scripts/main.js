@@ -4,7 +4,7 @@
  * every request over the module socket and owns all document writes.
  */
 import { MODULE_ID } from "./core/loot-sources.js";
-import { registerSettings } from "./foundry/settings.js";
+import { registerSettings, migrate } from "./foundry/settings.js";
 import { initSocket } from "./foundry/socket.js";
 import * as gm from "./foundry/gm.js";
 import { registerKeybinding, patchDoubleClick, addHudButton } from "./foundry/interaction.js";
@@ -26,6 +26,7 @@ Hooks.once("setup", () => {
 
 Hooks.once("ready", () => {
   initSocket(gm.handlers);
+  migrate();
   if (game.user.isGM && game.modules.get("item-piles")?.active) {
     ui.notifications.info(game.i18n.localize("INTERACTIVE_LOOTING.Notify.ItemPiles"));
   }

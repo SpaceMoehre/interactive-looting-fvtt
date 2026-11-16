@@ -51,6 +51,7 @@ export function isPlayerCharacter(actor) {
  * @returns {Promise<number|null>}
  */
 export async function rollSkill(actor, skill) {
+  if (!hasSkill(actor, skill)) return null;
   /** @type {any} */
   const a = actor;
   let result;
@@ -70,6 +71,20 @@ export async function rollSkill(actor, skill) {
   if (Array.isArray(result)) result = result[0];
   const total = result?.total ?? result?.roll?.total;
   return typeof total === "number" ? total : null;
+}
+
+/**
+ * Whether the actor has this skill key. Only checkable where the system exposes
+ * skills in a known place; elsewhere we assume it does.
+ * @param {Actor} actor
+ * @param {string} skill
+ */
+export function hasSkill(actor, skill) {
+  /** @type {any} */
+  const a = actor;
+  if (game.system.id === "dnd5e") return Boolean(a.system?.skills?.[skill]);
+  if (a.skills && typeof a.skills === "object") return skill in a.skills;
+  return true;
 }
 
 /** @param {string} html */

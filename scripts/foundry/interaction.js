@@ -40,6 +40,9 @@ export async function startInteraction(target) {
       const actor = own?.actor ?? game.user.character;
       if (!actor) return notifyError("noActor");
       if (!prep.skill) return notifyError("noSkill");
+      if (!system.hasSkill(actor, prep.skill)) {
+        return ui.notifications.error(game.i18n.format("INTERACTIVE_LOOTING.Error.unknownSkill", { skill: prep.skill }));
+      }
       total = await system.rollSkill(actor, prep.skill);
       if (total === null) return; // roll dialog cancelled
     }

@@ -9,7 +9,7 @@ const PRESETS = {
     hpPath: "system.attributes.hp.value",
     passivePath: "system.skills.prc.passive",
     lootSkill: "inv",
-    stealSkill: "slh",
+    stealSkill: "slt",
     skillModPath: "system.skills.{skill}.total",
     currencyPath: "system.currency",
     denominations: "pp,gp,ep,sp,cp",
@@ -109,6 +109,12 @@ export function registerSettings() {
 
   // System data paths (prefilled from the system preset)
   for (const [key, def] of Object.entries(preset)) reg(key, String, def);
+}
+
+/** Fix values saved by 0.1.0, which shipped the wrong dnd5e Sleight of Hand key. GM only. */
+export async function migrate() {
+  if (!game.user.isGM || game.system.id !== "dnd5e") return;
+  if (get("stealSkill") === "slh") await set("stealSkill", "slt");
 }
 
 /** @returns {string[]} */
