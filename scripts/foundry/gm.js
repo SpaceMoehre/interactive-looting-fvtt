@@ -60,7 +60,9 @@ function stealDc(target) {
 
 /** @param {"loot"|"steal"} mode */
 function skillFor(mode) {
-  return settings.get(mode === "loot" ? "lootSkill" : "stealSkill");
+  const skill = settings.get(mode === "loot" ? "lootSkill" : "stealSkill");
+  // 0.1.0 shipped the wrong dnd5e key; worlds may still have it saved.
+  return game.system.id === "dnd5e" && skill === "slh" ? "slt" : skill;
 }
 
 /**
